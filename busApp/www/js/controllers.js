@@ -1,18 +1,18 @@
 angular.module('busApp.controllers', [])
 
 .controller('TabsCtrl', function($scope, $rootScope, $ionicLoading, Model) {
-  $scope.routes = [];
+  $scope.lines = [];
 
   $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
 
   function getData(){
-    Model.Routes.getAll()
+    Model.Lines.getAll()
       .then(function(resp){
-        $scope.routes = resp;
+        $scope.lines = resp;
         $ionicLoading.hide();
       }, function(err){
         console.error(err);
-        $scope.routes = [];
+        $scope.lines = [];
         $ionicLoading.hide();
       });
   }
@@ -28,8 +28,8 @@ angular.module('busApp.controllers', [])
     getData();
   }
 
-  $scope.$on('update-routes', function(event, data){
-    $scope.routes = data;
+  $scope.$on('update-lines', function(event, data){
+    $scope.lines = data;
   });
 })
 
@@ -38,11 +38,36 @@ angular.module('busApp.controllers', [])
 })
 
 .controller('SearchCtrl', function($scope) {
+  var vm = this;
+  vm.filter = '';
+
 
 })
 
-.controller('LineDetailCtrl', function($scope) {
+.controller('LineDetailCtrl', function($scope, $stateParams, Model) {
+  var vm = this;
+  vm.line = {};
+  vm.currentExit = 0;
+  vm.arrowRight = true;
+  vm.currentTab = [];
 
+  vm.arrowClick = function(index){
+    ++index;
+    if(index >= vm.line.schedules.length){
+      index = 0;
+      vm.arrowRight = true;
+    }else if(index+1 >= vm.line.schedules.length){
+      vm.arrowRight = false;
+    }
+    vm.currentExit = index;
+  }
+
+  vm.tabClick = function(sch_idx, tab_name){
+    vm.currentTab[sch_idx] = tab_name;
+  }
+
+  vm.line = Model.Lines.getByCod($stateParams.lineCode);
+  console.log(vm.line);
 })
 
 .controller('UpdateCtrl', function($scope, $ionicLoading, DataMining) {
@@ -53,7 +78,7 @@ angular.module('busApp.controllers', [])
     DataMining.getData()
       .then(function(data){
         $ionicLoading.hide();
-        $scope.$emit('update-rotues', data);
+        $scope.$emit('update-lines', data);
       }, function(err){
         $ionicLoading.hide();
         console.error(err);

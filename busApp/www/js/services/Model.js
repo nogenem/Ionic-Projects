@@ -2,9 +2,9 @@
   'use strict';
 
   angular.module('busApp')
-    .factory('Model', function(Routes){
+    .factory('Model', function(Lines){
       return {
-        Routes: Routes
+        Lines: Lines
       }
     });
 })();

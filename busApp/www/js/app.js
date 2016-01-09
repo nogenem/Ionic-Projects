@@ -20,8 +20,10 @@ angular.module('busApp', ['ionic', 'ngCordova', 'busApp.controllers'])
       StatusBar.styleDefault();
     }
 
-    $rootScope.navBarColor = COLORS_SETTINGS.COLORS['royal'];
-    $rootScope.topTabsColor = COLORS_SETTINGS.COLORS['royal'];
+    $rootScope.mainNavBarColor = COLORS_SETTINGS.COLORS['royal'];
+    $rootScope.mainTabsColor = COLORS_SETTINGS.COLORS['royal'];
+    $rootScope.lineSubHeaderColor = COLORS_SETTINGS.COLORS['royal'];
+    $rootScope.lineTabsColor = COLORS_SETTINGS.COLORS['royal'];
     $rootScope.$broadcast('device-ready', 'ready!');
   });
 })

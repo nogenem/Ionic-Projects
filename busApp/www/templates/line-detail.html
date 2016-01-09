@@ -1,5 +1,40 @@
-<ion-view view-title="Detail">
-  <ion-content>
+<ion-view view-title="{{vm.line.nome || 'Detail'}}">
+  <div ng-repeat="sch in vm.line.schedules"
+    ng-init="sch_idx = $index; vm.currentTab[sch_idx] = sch.weekdays[0].day"
+    ng-show="vm.currentExit == sch_idx">
 
-  </ion-content>
+    <div id="line-sub-header" class="bar header-bar bar-dark" ng-style="{'background-color': lineSubHeaderColor}">
+      <h1 class="title">{{sch.exit}}</h1>
+      <div class="buttons" ng-click="vm.arrowClick(sch_idx);">
+        <a class="button button-icon icon"
+          ng-class="{
+              'ion-arrow-right-c': vm.arrowRight,
+              'ion-arrow-left-c': !vm.arrowRight
+          }"></a>
+      </div>
+    </div>
+
+    <ion-content id="line-detail-content">
+      <div id="line-sch" class="container-fluid"
+        ng-if="vm.currentTab[sch_idx] == days.day"
+        ng-repeat="days in sch.weekdays">
+
+        <div class="row2">
+          <span class="col-xs-4 col-sm-3 col-md-2 col-lg-2"
+          ng-repeat="time in days.schedule track by $index">{{time}}</span>
+        </div>
+    </div>
+    </ion-content>
+
+    <div id="line-tabs"
+      class="tabs-striped tabs-background-stable tabs-color-dark">
+      <div  class="tabs" ng-style="{'color': lineTabsColor, 'border-color': lineTabsColor}">
+        <a class="tab-item" href ng-repeat="days in sch.weekdays"
+        ng-class="{active: days.day==vm.currentTab[sch_idx]}"
+        ng-click="vm.tabClick(sch_idx, days.day);">
+        {{days.day}}
+      </a>
+    </div>
+  </div>
+  </div>
 </ion-view>

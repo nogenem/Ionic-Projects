@@ -9,6 +9,7 @@
     <title></title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/grid_system.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
@@ -31,14 +32,14 @@
     <script src="js/constants.js"></script>
     <script src="js/services/SqliteService.js"></script>
     <script src="js/services/DataMining.js"></script>
-    <script src="js/services/Routes.js"></script>
+    <script src="js/services/Lines.js"></script>
     <script src="js/services/Model.js"></script>
   </head>
   <body ng-app="busApp">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
-    <ion-nav-bar class="bar-dark" align-title="center" ng-style="{'background-color': navBarColor}">
+    <ion-nav-bar id="main-nav-bar" class="bar-dark" align-title="center" ng-style="{'background-color': mainNavBarColor}">
       <ion-nav-back-button>
       </ion-nav-back-button>
     </ion-nav-bar>
