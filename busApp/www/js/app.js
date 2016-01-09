@@ -7,23 +7,28 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('busApp', ['ionic', 'ngCordova', 'busApp.controllers'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, COLORS_SETTINGS) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    $rootScope.navBarColor = COLORS_SETTINGS.COLORS['dark'];
+    $rootScope.topTabsColor = COLORS_SETTINGS.COLORS['dark'];
+    $rootScope.$broadcast('device-ready', 'ready!');
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
+
+  $ionicConfigProvider.scrolling.jsScrolling(true);
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
