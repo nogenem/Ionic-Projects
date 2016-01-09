@@ -17,6 +17,8 @@
 
       function getData(){
         var _data = [];
+
+        return $q.resolve(_data);
       }
     });
 })();

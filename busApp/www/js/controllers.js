@@ -45,7 +45,7 @@ angular.module('busApp.controllers', [])
 
 })
 
-.controller('UpdateCtrl', function($scope, $ionicLoading) {
+.controller('UpdateCtrl', function($scope, $ionicLoading, DataMining) {
   var vm = this;
 
   vm.update = function(){
