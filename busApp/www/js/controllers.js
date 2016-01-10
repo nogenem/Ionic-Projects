@@ -5,6 +5,9 @@ angular.module('busApp.controllers', [])
 
   $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
 
+  //deixar os dados soh no $scope?
+  //ver a borda superior do android
+
   function getData(){
     Model.Lines.getAll()
       .then(function(resp){
@@ -29,12 +32,24 @@ angular.module('busApp.controllers', [])
   }
 
   $scope.$on('update-lines', function(event, data){
+    Model.Lines.setData(data);
     $scope.lines = data;
   });
 })
 
-.controller('HomeCtrl', function($scope) {
+.controller('HomeCtrl', function($scope, $ionicLoading, Model) {
+  var vm = this;
+  vm.exits = [];
 
+  $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
+  Model.Lines.getExits().then(function(data){
+    vm.exits = data;
+    $scope.exitModel = data[0];//mudar pra Ticen?
+    $ionicLoading.hide();
+  }, function(err){
+    console.error(err);
+    $ionicLoading.hide();
+  })
 })
 
 .controller('SearchCtrl', function($scope) {

@@ -10,3 +10,4 @@ Este projeto utiliza as seguintes libs:
 
 * https://jquery.com/
 * http://ngcordova.com/
+* https://github.com/inmagik/ionic-modal-select

@@ -1,5 +1,6 @@
 angular.module('busApp')
   .constant('COLORS_SETTINGS', {
+    'DEFAULT_COLOR': '#444',//dark
     'COLORS': {
       'light':      '#fff',
       'stable':     '#f8f8f8',

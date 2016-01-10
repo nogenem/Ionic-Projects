@@ -1,5 +1,35 @@
 <ion-view view-title="Home">
   <ion-content>
-    {{test}}
+    <ion-list>
+      <ion-item class="item-divider">
+        <div class="row2">
+          <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Saida: </div>
+          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            {{exitModel}}
+          </div>
+          <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <button class="button button-small button-clear button-dark" modal-select=""
+              ng-model="exitModel" options="vm.exits" modal-title="Select an exit" has-search="true">
+              <i class="icon ion-arrow-down-b"></i>
+              <div class="option">
+                {{option}}
+              </div>
+            </button>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="row">
+          <div class="col col-20">10:00</div>
+          <div class="col col-80">Ceasa</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="row">
+          <div class="col col-20">10:00</div>
+          <div class="col col-80">Shopping Itaguaçu</div>
+        </div>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

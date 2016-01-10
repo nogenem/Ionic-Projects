@@ -7,14 +7,15 @@
 #line-tabs a {
   color: inherit !important;
   border-color: inherit !important;
+  /*border-width: 3px 0px 0px 0px !important;*/
 }
 
 #line-sub-header {
-  margin-top: 88px;
+  margin-top: 92px;
 }
 
 #line-detail-content {
-  margin-top: 40px;
+  margin-top: 45px;
 }
 
 #line-sch span {

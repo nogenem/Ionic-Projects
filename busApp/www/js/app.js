@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('busApp', ['ionic', 'ngCordova', 'busApp.controllers'])
+angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.controllers'])
 
 .run(function($ionicPlatform, $rootScope, COLORS_SETTINGS) {
   $ionicPlatform.ready(function() {
@@ -20,10 +20,12 @@ angular.module('busApp', ['ionic', 'ngCordova', 'busApp.controllers'])
       StatusBar.styleDefault();
     }
 
-    $rootScope.mainNavBarColor = COLORS_SETTINGS.COLORS['royal'];
-    $rootScope.mainTabsColor = COLORS_SETTINGS.COLORS['royal'];
-    $rootScope.lineSubHeaderColor = COLORS_SETTINGS.COLORS['royal'];
-    $rootScope.lineTabsColor = COLORS_SETTINGS.COLORS['royal'];
+    // Cores default das tabs, headers e navbars do app
+    $rootScope.mainNavBarColor = COLORS_SETTINGS.DEFAULT_COLOR;
+    $rootScope.mainTabsColor = COLORS_SETTINGS.DEFAULT_COLOR;
+    $rootScope.lineSubHeaderColor = COLORS_SETTINGS.DEFAULT_COLOR;
+    $rootScope.lineTabsColor = COLORS_SETTINGS.DEFAULT_COLOR;
+
     $rootScope.$broadcast('device-ready', 'ready!');
   });
 })

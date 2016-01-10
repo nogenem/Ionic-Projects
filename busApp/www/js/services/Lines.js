@@ -3,7 +3,7 @@
 
   angular.module('busApp')
     .factory('Lines', function($q, $rootScope, SqliteService){
-      var _lines = [{
+      var _lines = [{ //fake data
         cod: 1,
         nome: 'Ceasa',
         obs: '',
@@ -82,10 +82,18 @@
         ]
       }];
 
+      var _exits = ['BAIRRO', 'Ticen - Plataforma E'];//fake data
+
       return ({
+        setData: setData,
         getAll: getAll,
-        getByCod: getByCod
+        getByCod: getByCod,
+        getExits: getExits
       });
+
+      function setData(data){
+        _lines = data;
+      }
 
       function getAll(){
         return $q.resolve(_lines);
@@ -102,6 +110,10 @@
             result = val;
         });
         return result;
+      }
+
+      function getExits(){
+        return $q.resolve(_exits);
       }
     });
 })();
