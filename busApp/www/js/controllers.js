@@ -2,24 +2,30 @@ angular.module('busApp.controllers', [])
 
 .controller('TabsCtrl', function($scope, $rootScope, $ionicLoading, Model) {
   $scope.lines = [];
+  $scope.exits = [];
 
-  $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
-
-  //deixar os dados soh no $scope?
-  //ver a borda superior do android
-  //melhorar HOME [ver evento de saida da view/entrada da view pra iniciar/parar o interval]
+  // TODO
+    // item-wrap em todo lugar!
+    // adicionar novos horarios para teste
 
   function getData(){
     Model.Lines.getAll()
       .then(function(resp){
         $scope.lines = resp;
-        $ionicLoading.hide();
+        Model.Lines.getExits().then(function(data){
+          $scope.exits = data;
+          $ionicLoading.hide();
+        }, function(err){
+          console.error(err.message);
+          $ionicLoading.hide();
+        });
       }, function(err){
-        console.error(err);
-        $scope.lines = [];
+        console.error(err.message);
         $ionicLoading.hide();
       });
   }
+
+  $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
 
   $rootScope.$on('device-ready', function(event, data){
     console.log('>> Pegando dados no celular...');
@@ -33,26 +39,15 @@ angular.module('busApp.controllers', [])
   }
 
   $scope.$on('update-lines', function(event, data){
-    Model.Lines.setData(data);
     $scope.lines = data;
   });
 })
 
 .controller('HomeCtrl', function($scope, $ionicLoading, $interval, Model) {
   var vm = this;
-  vm.exits = [];
   vm.nextSchedules = [];
   vm.intervalId = null;
-
-  $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
-  Model.Lines.getExits().then(function(data){
-    vm.exits = data;
-    vm.exitModel = data[0];//mudar pra Ticen?
-    $ionicLoading.hide();
-  }, function(err){
-    console.error(err);
-    $ionicLoading.hide();
-  });
+  vm.exitModel = '';
 
   $scope.$on('$ionicView.enter', function(e) {
     vm.intervalId = $interval(function(){
@@ -119,7 +114,7 @@ angular.module('busApp.controllers', [])
   vm.filter = '';
 })
 
-.controller('LineDetailCtrl', function($scope, $stateParams, Model) {
+.controller('LineDetailCtrl', function($scope, $stateParams, filterFilter, Model) {
   var vm = this;
   vm.line = {};
   vm.currentExit = 0;
@@ -141,7 +136,9 @@ angular.module('busApp.controllers', [])
     vm.currentTab[sch_idx] = tab_name;
   }
 
-  vm.line = Model.Lines.getByCod($stateParams.lineCode);
+  //Model.Lines.getByCod($stateParams.lineCode);
+  vm.line = filterFilter($scope.lines, {cod: parseInt($stateParams.lineCode)})[0];
+  console.log(vm.line);
 })
 
 .controller('UpdateCtrl', function($scope, $ionicLoading, DataMining) {
@@ -151,11 +148,11 @@ angular.module('busApp.controllers', [])
     $ionicLoading.show({template: '<p>Updating...</p><ion-spinner></ion-spinner>'});
     DataMining.getData()
       .then(function(data){
-        $ionicLoading.hide();
         $scope.$emit('update-lines', data);
-      }, function(err){
         $ionicLoading.hide();
-        console.error(err);
+      }, function(err){
+        console.error(err.message);
+        $ionicLoading.hide();
       });
   }
 });

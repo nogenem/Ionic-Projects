@@ -2,107 +2,70 @@
   'use strict';
 
   angular.module('busApp')
-    .factory('Lines', function($q, $rootScope, SqliteService){
-      var _lines = [{ //fake data
-        cod: 1,
-        nome: 'Ceasa',
-        obs: '',
-        schedules: [
-          {
-            exit: 'Ticen - Plataforma E',
-            weekdays: [
-              {day: 'Semana', schedule: [
-                '06:00', '06:25', '17:00'
-              ]},
-              {day: 'Sabado', schedule: [
-                '08:00', '11:40', '17:20'
-              ]}
-            ]
-          },
-          {
-            exit: 'Bairro',
-            weekdays: [
-              {day: 'Semana', schedule: [
-                '08:00', '11:40', '18:00'
-              ]},
-              {day: 'Sabado', schedule: [
-                '06:00', '07:25', '18:20'
-              ]}
-            ]
-          }
-        ]
-      }, {
-        cod: 2,
-        nome: 'Shopping Itaguaçu',
-        obs: '',
-        schedules: [
-          {
-            exit: 'Ticen - Plataforma E',
-            weekdays: [
-              {day: 'Semana', schedule: [
-                '06:00', '06:25', '19:00',
-              ]},
-              {day: 'Sabado', schedule: [
-                '08:00', '11:40', '19:20',
-              ]},
-              {day: 'Domingo', schedule: [
-                '08:00', '11:40', '19:40',
-              ]}
-            ]
-          },
-          {
-            exit: 'Bairro',
-            weekdays: [
-              {day: 'Semana', schedule: [
-                '08:00', '11:40', '13:07', '20:00'
-              ]},
-              {day: 'Sabado', schedule: [
-                '06:00', '06:25', '20:20',
-              ]},
-              {day: 'Domingo', schedule: [
-                '08:00', '11:40', '16:07', '20:40'
-              ]}
-            ]
-          }
-        ]
-      }];
+  .factory('Lines', function($q, $rootScope, filterFilter, SqliteService){
 
-      var _exits = ['Bairro', 'Ticen - Plataforma E'];//fake data
-
-      return ({
-        setData: setData,
-        getAll: getAll,
-        getByCod: getByCod,
-        getExits: getExits
-      });
-
-      function setData(data){
-        _lines = data;
-      }
-
-      function getAll(){
-        return $q.resolve(_lines);
-      }
-
-      function getByCod(cod){
-        if(_lines.length == 0)
-          return {};
-
-        var result = {};
-        cod = parseInt(cod);
-        angular.forEach(_lines, function(val, i){
-          if(val.cod == cod)
-            result = val;
-        });
-        return result;
-      }
-
-      function getExits(){
-        var query = 'SELECT saida FROM horario GROUP BY saida';
-        /*return SqliteService.getItems(query).then(function(resp){
-            return resp;
-          });*/
-        return $q.resolve(_exits);
-      }
+    return ({
+      getAll: getAll,
+      getExits: getExits
     });
+
+    function parseData(resp){
+      var _resp = [];
+      var lastExit = '', lastDay = '';
+
+      for (var i = 0; i < resp.rows.length; i++) {
+        var val = resp.rows.item(i);
+
+        if(lastExit == '' || lastExit != val.saida){
+          lastExit = val.saida;
+          lastDay = '';
+          _resp.push({exit: lastExit, weekdays: []});
+        }
+        if(lastDay == '' || lastDay != val.dia){
+          lastDay = val.dia;
+          _resp[_resp.length-1].weekdays.push({day: lastDay, schedule: []});
+        }
+        var lastSchedule = _resp[_resp.length-1].weekdays[(_resp[_resp.length-1].weekdays.length)-1];
+        lastSchedule.schedule.push(val.hora);
+      }
+      return _resp;
+    }
+
+    function getAll(){
+      var _routes = [];
+
+      var query1 = 'SELECT * FROM linha ORDER BY nome DESC';
+      var query2 = 'SELECT * FROM horario WHERE linha_cod = ? ORDER BY saida,dia DESC';
+
+      var p = SqliteService.executeSql(query1).then(function(resp){
+        var promises = [];
+        for (var i = 0; i < resp.rows.length; i++) {
+          _routes.push(resp.rows.item(i));
+          _routes[i].schedules = [];
+
+          promises.push(SqliteService.executeSql(query2, [parseInt(_routes[i].cod)]).then(function(resp2){
+            return parseData(resp2);
+          }));
+        }
+        return $q.all(promises).then(function(resp3){
+          angular.forEach(_routes, function(val, a){
+            _routes[a].schedules = resp3[a];
+          });
+          return _routes;
+        });
+      });
+      return p;
+    }
+
+    function getExits(){
+      var query = 'SELECT saida FROM horario GROUP BY saida';
+      return SqliteService.getItems(query).then(function(resp){
+        var _resp = [];
+        for(var i = 0; i < resp.length; i++){
+          _resp.push(resp[i].saida);
+        }
+        return _resp;
+      });
+    }
+  });
 })();

@@ -9,9 +9,11 @@
       self.db = function () {
         if (!_db) {
           if (window.sqlitePlugin !== undefined) {
+            console.log('Loading cellphone\'s DB');
             _db = window.sqlitePlugin.openDatabase({ name: "database.db", location: 2, createFromLocation: 1 });
           } else {
             // For debugging in the browser
+            console.log('Loading browser\'s DB');
             _db = window.openDatabase("database.db", "1.0", "Database", 200000);
           }
         }
