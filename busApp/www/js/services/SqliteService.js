@@ -25,7 +25,7 @@
       };
 
       self.getItems = function(query, parameters) {
-        return self.executeSql(query, parameters).then(function(){
+        return self.executeSql(query, parameters).then(function(resp){
             var _items = [];
             for (var i = 0; i < resp.rows.length; i++) {
               _items.push(resp.rows.item(i));
