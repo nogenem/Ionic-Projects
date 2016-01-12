@@ -19,10 +19,11 @@
           </div>
         </div>
       </ion-item>
-      <ion-item ng-repeat="o in vm.nextSchedules | limitTo:15">
+      <ion-item ng-repeat="o in vm.nextSchedules | limitTo:15 | orderBy:'hora' track by $index"
+        href="#/main/search/{{o.cod}}" class="item-text-wrap">
         <div class="row">
           <div class="col col-20">{{o.hora}}</div>
-          <div class="col col-80">{{o.nome}}</div>
+          <div class="col col-80">{{o.nome}} <span ng-show="o.obs !== ''">({{o.obs}})</span></div>
         </div>
       </ion-item>
     </ion-list>

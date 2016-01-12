@@ -1,26 +1,40 @@
+function error(err){
+  if(err.message){
+    alert(err.message);
+  }else{
+    console.log(err);
+  }
+}
+
 angular.module('busApp.controllers', [])
 
-.controller('TabsCtrl', function($scope, $rootScope, $ionicLoading, Model) {
+.controller('TabsCtrl', function($scope, $q, $rootScope, $ionicLoading,
+    $cordovaNetwork, Model) {
   $scope.lines = [];
   $scope.exits = [];
 
   // TODO
     // item-wrap em todo lugar!
-    // adicionar novos horarios para teste
+    // ta muito lento
+    // ver os dados no ASSERT
 
   function getData(){
-    Model.Lines.getAll()
+    var promises = [];
+
+    promises.push(Model.Lines.getAll()
       .then(function(resp){
         $scope.lines = resp;
-        Model.Lines.getExits().then(function(data){
-          $scope.exits = data;
-          $ionicLoading.hide();
-        }, function(err){
-          console.error(err.message);
-          $ionicLoading.hide();
-        });
+      }));
+    promises.push(Model.Lines.getExits()
+      .then(function(resp){
+        $scope.exits = resp;
+      }));
+
+    $q.all(promises)
+      .then(function(resp){
+        $ionicLoading.hide();
       }, function(err){
-        console.error(err.message);
+        error(err);
         $ionicLoading.hide();
       });
   }
@@ -35,11 +49,17 @@ angular.module('busApp.controllers', [])
   //  constrollers serem criados...
   if(!window.cordova){
     console.log('>> Pegando dados no browser...');
-    getData();
+    Model.Lines.createTables().then(function(resp){
+      getData();
+    }, function(err){
+      error(err);
+      $ionicLoading.hide();
+    });
   }
 
   $scope.$on('update-lines', function(event, data){
-    $scope.lines = data;
+    $scope.lines = data.all;
+    $scope.exits = data.exits;
   });
 })
 
@@ -47,7 +67,7 @@ angular.module('busApp.controllers', [])
   var vm = this;
   vm.nextSchedules = [];
   vm.intervalId = null;
-  vm.exitModel = '';
+  vm.exitModel = 'TICEN - PLATAFORMA E';
 
   $scope.$on('$ionicView.enter', function(e) {
     vm.intervalId = $interval(function(){
@@ -81,7 +101,7 @@ angular.module('busApp.controllers', [])
           for(var d = 0; d < weekdays.schedule.length; d++){
             var hora = weekdays.schedule[d];
             if(cHour < hora){
-              vm.nextSchedules.push({nome: nome, hora: hora});
+              vm.nextSchedules.push({cod: line.cod, nome: nome, obs: line.obs, hora: hora});
               break;
             }
           }
@@ -141,18 +161,45 @@ angular.module('busApp.controllers', [])
   console.log(vm.line);
 })
 
-.controller('UpdateCtrl', function($scope, $ionicLoading, DataMining) {
+.controller('UpdateCtrl', function($scope, $ionicLoading, $ionicActionSheet,
+    ConnectivityMonitor, Model, DataMining) {
   var vm = this;
 
-  vm.update = function(){
+  function _update(){
     $ionicLoading.show({template: '<p>Updating...</p><ion-spinner></ion-spinner>'});
     DataMining.getData()
       .then(function(data){
-        $scope.$emit('update-lines', data);
-        $ionicLoading.hide();
+        console.log('Controller: DataMining complete!');
+        Model.Lines.getExits().then(function(resp){
+          $scope.$emit('update-lines', {all:data, exits:resp});
+          $ionicLoading.hide();
+        });
       }, function(err){
-        console.error(err.message);
+        error(err);
         $ionicLoading.hide();
       });
+  }
+
+  vm.update = function(){
+    if(ConnectivityMonitor.isOffline()){
+      alert("Você está offline.");
+      return;
+    }
+    var connType = ConnectivityMonitor.getNetwork();
+    console.log('Connection: ' +connType);
+    if(connType != 'wifi' && connType != 'ethernet'){//3g e afins
+      var hideSheet = $ionicActionSheet.show({
+        titleText: '<strong>Recomendamos a utilização de wi-fi para esta operação.<br\>Deseja continuar mesmo assim?</strong>',
+        cancelText: 'Cancel',
+        destructiveText: 'Continuar',
+        cancel: function(){},
+        destructiveButtonClicked: function(){
+          _update();
+          hideSheet();
+        }
+      });
+    }else{
+      _update();
+    }
   }
 });

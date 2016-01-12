@@ -6,8 +6,22 @@
 
     return ({
       getAll: getAll,
-      getExits: getExits
+      getExits: getExits,
+      createTables: createTables
     });
+
+    function createTables(){
+      var query1 = 'CREATE TABLE IF NOT EXISTS linha (cod INTEGER PRIMARY KEY,'+
+          'nome TEXT NOT NULL, obs TEXT);';
+      var query2 = 'CREATE TABLE IF NOT EXISTS horario (id INTEGER PRIMARY KEY AUTOINCREMENT,'+
+        'hora CHAR(5), saida TEXT, dia TEXT, linha_cod INTEGER,'+
+        'FOREIGN KEY(linha_cod) REFERENCES linha(cod));';
+
+      SqliteService.addQuery(query1);
+      SqliteService.addQuery(query2);
+
+      return SqliteService.executePendingQueries();
+    }
 
     function parseData(resp){
       var _resp = [];
@@ -61,6 +75,7 @@
       var query = 'SELECT saida FROM horario GROUP BY saida';
       return SqliteService.getItems(query).then(function(resp){
         var _resp = [];
+        console.log(resp);
         for(var i = 0; i < resp.length; i++){
           _resp.push(resp[i].saida);
         }

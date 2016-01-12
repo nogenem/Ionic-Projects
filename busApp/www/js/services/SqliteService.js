@@ -5,6 +5,7 @@
     .service('SqliteService', function($q, $cordovaSQLite){
       var self = this;
       var _db;
+      var _querys = [];//querys pendentes
 
       self.db = function () {
         if (!_db) {
@@ -21,7 +22,7 @@
       };
 
       self.executeSql = function (query, parameters) {
-        console.log('Executando sql: '+query);
+        //console.log('Executando sql: '+query);
         parameters = parameters == undefined ? [] : parameters;
         return $cordovaSQLite.execute(self.db(), query, parameters);
       };
@@ -33,6 +34,28 @@
               _items.push(resp.rows.item(i));
             }
             return _items;
+          });
+      }
+
+      self.addQuery = function(query, parameters){
+        _querys.push({'query':query, 'params':parameters});
+      }
+
+      self.executePendingQueries = function(){//executa todas as querys pendentes
+        var promises = [];
+        var resps = [];
+        _querys.map(function(value){
+          //console.log(value);
+          promises.push( self.executeSql(value.query, value.params)
+            .then(function(resp){
+              console.log(value.query +' Executed!');
+              return resp;
+            }) );
+        });
+        return $q.all(promises)
+          .then(function(resp){
+            _querys = [];
+            return resp;
           });
       }
     });
