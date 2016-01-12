@@ -4,7 +4,6 @@
   function getRoutes($http, SqliteService){
     var url = 'https://cors-anywhere.herokuapp.com/http://www.biguacutransportes.com.br/ajax/lineBus/searchGetLine';
     var data = 'company=1&order=DESC';
-    var query = "INSERT INTO linha (cod, nome, obs) VALUES (?,?,?);";
 
     function parseData(resp){
       var _resp = [];
@@ -24,7 +23,6 @@
             //dest: $(tds[2]).text().split('/')[1],
             obs: obs
           });
-          SqliteService.addQuery(query, [cod,nome,obs]);
         }
       });
       return _resp;
@@ -43,13 +41,19 @@
   function getRoute($http, SqliteService, cod){
     var url = 'https://cors-anywhere.herokuapp.com/http://www.biguacutransportes.com.br/ajax/lineBus/preview/?line='+
       cod+'&company=0&detail%5B%5D=1&detail%5B%5D=2&detail%5B%5D=3';
-    var query = "INSERT INTO horario (hora,saida,dia,linha_cod) VALUES (?,?,?,?);";
 
     function parseData(resp){
       var _result = [];
 
       //retirar todas as imgs para não dar erro no console
       resp = resp.replace(/src=.+?>/g, '>');
+
+      _result.lastUpdate = $(resp).find('#contentInfo > div:nth-child(2)').text().slice(19).trim();
+      var tmp = _result.lastUpdate.split('/');
+      _result.lastUpdate = new Date(parseInt(tmp[2]), parseInt(tmp[1])-1, parseInt(tmp[0]));
+      _result.lastUpdate = _result.lastUpdate.toDateString();
+
+      _result.data = [];
 
       $(resp).find('#tabContent1 > div').each(function(a, val){
         val = $(val);
@@ -76,11 +80,10 @@
 
             if(horario != ''){
               obj.weekdays[b].schedule.push(horario);
-              SqliteService.addQuery(query, [horario,obj.exit,day,cod]);
             }
           });
         });
-        _result.push(obj);
+        _result.data.push(obj);
       });
 
       return _result;
@@ -94,33 +97,59 @@
   }
 
   angular.module('busApp')
-  .service('DataMining', function($http, $q, SqliteService){
+  .service('DataMining', function($http, $q, SqliteService, filterFilter){
     return({
       getData: getData
     });
 
-    function getData(){
-      var query1 = 'DELETE FROM horario;';
-      var query2 = 'DELETE FROM linha';
+    function getData(lastLines){
+      var query1 = "DELETE FROM horario WHERE linha_cod = ?";
+      var query2 = "DELETE FROM linha WHERE cod = ?";
+      var query3 = "INSERT INTO linha (cod, nome, obs, last_update) VALUES (?,?,?,?);";
+      var query4 = "INSERT INTO horario (hora,saida,dia,linha_cod) VALUES (?,?,?,?);";
 
-      SqliteService.addQuery(query1);
-      SqliteService.addQuery(query2);
-      var r = getRoutes($http, SqliteService).then(function(resp){
-        var promises = [];
-        resp.map(function(value){
-          promises.push(getRoute($http, SqliteService, value.cod).then(function(resp2){
-            value.schedules = resp2;
-            return value;
-          }));
-        });
-        return $q.all(promises).then(function(resp3){
-          console.log('DataMining: DataMining complete!');
-          return SqliteService.executePendingQueries().then(function(resp){
-            console.log('DataMining: Update BD complete!');
-            return resp3;
+      var r = getRoutes($http, SqliteService)
+        .then(function(resp){
+          var promises = [];
+          resp.map(function(value){
+            promises.push(getRoute($http, SqliteService, value.cod)
+              .then(function(resp2){
+                value.lastUpdate = resp2.lastUpdate;
+                value.schedules = resp2.data;
+                if(lastLines && lastLines.length > 0){
+                  var cValue = filterFilter(lastLines, {cod: parseInt(value.cod)})[0];
+                  if(cValue && (value.lastUpdate == cValue.last_update)){
+                    return null;
+                  }
+                }
+                SqliteService.addQuery(query1, [value.cod]);
+                SqliteService.addQuery(query2, [value.cod]);
+                SqliteService.addQuery(query3, [value.cod, value.nome, value.obs, value.lastUpdate]);
+                for(var a = 0; a < resp2.data.length; a++){
+                  var schedules = resp2.data[a];
+                  var exit = schedules.exit;
+                  for(var b = 0; b < schedules.weekdays.length; b++){
+                    var weekdays = schedules.weekdays[b];
+                    var day = weekdays.day;
+                    for(var c = 0; c < weekdays.schedule.length; c++){
+                      var hora = weekdays.schedule[c];
+                      SqliteService.addQuery(query4, [hora,exit,day,value.cod]);
+                    }
+                  }
+                }
+                return value;
+              }));
           });
+          return $q.all(promises)
+            .then(function(resp3){
+              console.log('DataMining: DataMining complete!');
+              return SqliteService.executePendingQueries()
+                .then(function(resp){
+                  console.log('DataMining: Update BD complete!');
+                  return resp3;
+                });
+            });
         });
-      });
 
       return r;
     }

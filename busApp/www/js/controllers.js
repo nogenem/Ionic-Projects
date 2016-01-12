@@ -1,9 +1,10 @@
 function error(err){
-  if(err.message){
-    alert(err.message);
-  }else{
-    console.log(err);
-  }
+  var msg = 'An unknown error occurred. Please try again...';
+  if(err.message)
+    msg = err.message;
+
+  console.error(err);
+  alert(msg);
 }
 
 angular.module('busApp.controllers', [])
@@ -14,12 +15,19 @@ angular.module('busApp.controllers', [])
   $scope.exits = [];
 
   // TODO
+    // colocar SEMANA na frente de SABADO
     // item-wrap em todo lugar!
     // ta muito lento
     // ver os dados no ASSERT
 
-  function getData(){
+  function getData(create){
     var promises = [];
+
+    $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
+
+    if(create){
+      promises.push(Model.Lines.createTables());
+    }
 
     promises.push(Model.Lines.getAll()
       .then(function(resp){
@@ -39,8 +47,6 @@ angular.module('busApp.controllers', [])
       });
   }
 
-  $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
-
   $rootScope.$on('device-ready', function(event, data){
     console.log('>> Pegando dados no celular...');
     getData();
@@ -49,17 +55,11 @@ angular.module('busApp.controllers', [])
   //  constrollers serem criados...
   if(!window.cordova){
     console.log('>> Pegando dados no browser...');
-    Model.Lines.createTables().then(function(resp){
-      getData();
-    }, function(err){
-      error(err);
-      $ionicLoading.hide();
-    });
+    getData();
   }
 
   $scope.$on('update-lines', function(event, data){
-    $scope.lines = data.all;
-    $scope.exits = data.exits;
+    getData();
   });
 })
 
@@ -167,13 +167,11 @@ angular.module('busApp.controllers', [])
 
   function _update(){
     $ionicLoading.show({template: '<p>Updating...</p><ion-spinner></ion-spinner>'});
-    DataMining.getData()
+    DataMining.getData($scope.lines)
       .then(function(data){
         console.log('Controller: DataMining complete!');
-        Model.Lines.getExits().then(function(resp){
-          $scope.$emit('update-lines', {all:data, exits:resp});
-          $ionicLoading.hide();
-        });
+        $ionicLoading.hide();
+        $scope.$emit('update-lines', 'done!');
       }, function(err){
         error(err);
         $ionicLoading.hide();

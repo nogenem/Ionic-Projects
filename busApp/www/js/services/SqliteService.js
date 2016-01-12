@@ -45,13 +45,13 @@
         var promises = [];
         var resps = [];
         _querys.map(function(value){
-          //console.log(value);
           promises.push( self.executeSql(value.query, value.params)
             .then(function(resp){
-              console.log(value.query +' Executed!');
+              console.log(value.query +' - '+ angular.toJson(value.params));
               return resp;
             }) );
         });
+        console.log('Executing ',promises.length,' queries!');
         return $q.all(promises)
           .then(function(resp){
             _querys = [];
