@@ -29,7 +29,7 @@
 
     function parseData(resp){
       var _resp = [];
-      var lastExit = '', lastDay = '';
+      var lastExit = '', lastDay = '', lastIndex = 0;
 
       for (var i = 0; i < resp.rows.length; i++) {
         var val = resp.rows.item(i);
@@ -41,9 +41,10 @@
         }
         if(lastDay == '' || lastDay != val.dia){
           lastDay = val.dia;
-          _resp[_resp.length-1].weekdays.push({day: lastDay, schedule: []});
+          lastIndex = (lastDay == 'Semana') ? 0 : (lastDay == 'Domingo') ? 2 : 1;
+          _resp[_resp.length-1].weekdays[lastIndex] = {day: lastDay, schedule: []};
         }
-        var lastSchedule = _resp[_resp.length-1].weekdays[(_resp[_resp.length-1].weekdays.length)-1];
+        var lastSchedule = _resp[_resp.length-1].weekdays[lastIndex];
         lastSchedule.schedule.push(val.hora);
       }
       return _resp;

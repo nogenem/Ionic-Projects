@@ -22,7 +22,6 @@
       };
 
       self.executeSql = function (query, parameters) {
-        //console.log('Executando sql: '+query);
         parameters = parameters == undefined ? [] : parameters;
         return $cordovaSQLite.execute(self.db(), query, parameters);
       };
@@ -47,11 +46,11 @@
         _querys.map(function(value){
           promises.push( self.executeSql(value.query, value.params)
             .then(function(resp){
-              console.log(value.query +' - '+ angular.toJson(value.params));
+              //console.log('Running query:\n\t'+ value.query +' - '+ angular.toJson(value.params));
               return resp;
             }) );
         });
-        console.log('Executing ',promises.length,' queries!');
+        console.log('Running ',promises.length,' queries!');
         return $q.all(promises)
           .then(function(resp){
             _querys = [];
