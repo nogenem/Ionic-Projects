@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.controllers'])
 
-.run(function($ionicPlatform, $rootScope, COLORS_SETTINGS) {
+.run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -19,12 +19,6 @@ angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.co
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    // Cores default das tabs, headers e navbars do app
-    $rootScope.mainNavBarColor = COLORS_SETTINGS.DEFAULT_COLOR;
-    $rootScope.mainTabsColor = COLORS_SETTINGS.DEFAULT_COLOR;
-    $rootScope.lineSubHeaderColor = COLORS_SETTINGS.DEFAULT_COLOR;
-    $rootScope.lineTabsColor = COLORS_SETTINGS.DEFAULT_COLOR;
 
     $rootScope.$broadcast('device-ready', 'ready!');
   });
@@ -70,10 +64,10 @@ angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.co
     }
   })
 
-  .state('tab.line-detail', {
-    url: '/search/:lineCode',
+  .state('tab.search.line-detail', {
+    url: '/:lineCode',
     views: {
-      'tab-search': {
+      'tab-search@tab': {
         templateUrl: 'templates/line-detail.html',
         controller: 'LineDetailCtrl as vm'
       }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.busapp381305" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>busApp</name>
-  <description>
-        An Ionic Framework and Cordova project.
+  <name>Horários de Onibus - Biguaçu</name>
+  <description>&#xD;
+        App para consulta de horários de onibus da empresa Biguaçu (São José/SC).&#xD;
     </description>
-  <author email="you@example.com" href="http://example.com.com/">
-      Your Name Here
+  <author email="gilney.salvo@gmail.com" href="">&#xD;
+      Gilney Nathanael Mathias&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>

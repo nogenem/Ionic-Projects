@@ -1,15 +1,4 @@
 /* Empty. Add your own CSS if you like */
-#main-nav-bar .bar, #main-nav-bar .nav-bar-block,
-#main-tabs .tab-nav {
-  background-color: inherit !important;
-}
-
-#line-tabs a {
-  color: inherit !important;
-  border-color: inherit !important;
-  /*border-width: 3px 0px 0px 0px !important;*/
-}
-
 #line-sub-header {
   margin-top: 92px;
 }

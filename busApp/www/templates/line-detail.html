@@ -3,7 +3,7 @@
     ng-init="sch_idx = $index; vm.currentTab[sch_idx] = sch.weekdays[0].day"
     ng-show="vm.currentExit == sch_idx">
 
-    <div id="line-sub-header" class="bar header-bar bar-dark" ng-style="{'background-color': lineSubHeaderColor}">
+    <div id="line-sub-header" class="bar header-bar bar-assertive">
       <h1 class="title">{{sch.exit}}</h1>
       <div class="buttons" ng-click="vm.arrowClick(sch_idx);">
         <a class="button button-icon icon"
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <ion-content id="line-detail-content">
+    <ion-content id="line-detail-content" has-bouncing="true" class="has-footer">
       <div id="line-sch" class="container-fluid"
         ng-if="vm.currentTab[sch_idx] == days.day"
         ng-repeat="days in sch.weekdays">
@@ -27,8 +27,8 @@
     </ion-content>
 
     <div id="line-tabs"
-      class="tabs-striped tabs-background-stable tabs-color-dark">
-      <div  class="tabs" ng-style="{'color': lineTabsColor, 'border-color': lineTabsColor}">
+      class="tabs-striped tabs-background-stable tabs-color-assertive">
+      <div  class="tabs">
         <a class="tab-item" href ng-repeat="days in sch.weekdays"
         ng-class="{active: days.day==vm.currentTab[sch_idx]}"
         ng-click="vm.tabClick(sch_idx, days.day);">

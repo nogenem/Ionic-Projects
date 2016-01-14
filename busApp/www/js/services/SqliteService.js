@@ -50,7 +50,7 @@
               return resp;
             }) );
         });
-        console.log('Running ',promises.length,' queries!');
+        console.log('Running ', promises.length ,' queries!');
         return $q.all(promises)
           .then(function(resp){
             _querys = [];

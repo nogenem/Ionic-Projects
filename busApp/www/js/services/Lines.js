@@ -11,18 +11,19 @@
     });
 
     function createTables(){
-      var query1 = 'CREATE TABLE IF NOT EXISTS linha (cod INTEGER PRIMARY KEY,'+
-          'nome TEXT NOT NULL, obs TEXT, last_update TEXT);';
-      var query2 = 'CREATE TABLE IF NOT EXISTS horario (id INTEGER PRIMARY KEY AUTOINCREMENT,'+
-        'hora CHAR(5), saida TEXT, dia TEXT, linha_cod INTEGER,'+
-        'FOREIGN KEY(linha_cod) REFERENCES linha(cod));';
-      //var query3 = 'DROP TABLE horario;';
-      //var query4 = 'DROP TABLE linha;';
+      var querys = [
+        'DROP TABLE horario;',
+        'DROP TABLE linha;',
+        'CREATE TABLE IF NOT EXISTS linha (cod INTEGER PRIMARY KEY,'+
+          'nome TEXT NOT NULL, obs TEXT, last_update TEXT);',
+        'CREATE TABLE IF NOT EXISTS horario (id INTEGER PRIMARY KEY AUTOINCREMENT,'+
+          'hora CHAR(5), saida TEXT, dia TEXT, linha_cod INTEGER,'+
+          'FOREIGN KEY(linha_cod) REFERENCES linha(cod));'
+      ];
 
-      //SqliteService.addQuery(query3);
-      //SqliteService.addQuery(query4);
-      SqliteService.addQuery(query1);
-      SqliteService.addQuery(query2);
+      for(var i = 0; i<querys.length; i++){
+        SqliteService.addQuery(querys[i]);
+      }
 
       return SqliteService.executePendingQueries();
     }

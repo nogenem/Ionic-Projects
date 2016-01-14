@@ -1,10 +1,7 @@
 (function(){
   function error(err){
     var msg = 'Ocorreu um erro desconhecido. Por favor, tente denovo...';
-    if(err.message)
-      msg = err.message;
-
-    console.error(err);
+    console.error( angular.toJson(err) );
     alert(msg);
   }
 
@@ -17,11 +14,12 @@
 
     // TODO
       // ver os dados no ASSERT
+  	  // tentar usar 'bind-once' no ng-class dos elementos do route-detail???
 
     function getData(create){
       var promises = [];
 
-      $ionicLoading.show({template: '<p>Loading...</p><ion-spinner></ion-spinner>'});
+      $ionicLoading.show({template: '<p>Carregando...</p><ion-spinner></ion-spinner>'});
 
       if(create){
         promises.push(Model.Lines.createTables());
@@ -53,7 +51,7 @@
     //  constrollers serem criados...
     if(!window.cordova){
       console.log('>> Pegando dados no browser...');
-      getData(true);
+      getData();
     }
 
     $scope.$on('update-lines', function(event, data){
@@ -168,7 +166,7 @@
     var vm = this;
 
     function _update(){
-      $ionicLoading.show({template: '<p>Updating...</p><ion-spinner></ion-spinner>'});
+      $ionicLoading.show({template: '<p>Atualizando...</p><ion-spinner></ion-spinner>'});
       DataMining.getData($scope.lines)
         .then(function(data){
           console.log('Controller: DataMining complete!');
@@ -190,8 +188,8 @@
       if(connType != 'wifi' && connType != 'ethernet'){//3g e afins
         var hideSheet = $ionicActionSheet.show({
           titleText: '<strong>Recomendamos a utilização de wi-fi para esta operação.<br\>Deseja continuar mesmo assim?</strong>',
-          cancelText: 'Cancel',
-          destructiveText: 'Continuar',
+          cancelText: 'Cancelar',
+          destructiveText: '<i class="icon ion-checkmark-round balanced"></i> Continuar',
           cancel: function(){},
           destructiveButtonClicked: function(){
             _update();
