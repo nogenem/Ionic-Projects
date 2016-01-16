@@ -1,7 +1,7 @@
 (function(){
   function error(err){
     var msg = 'Ocorreu um erro desconhecido. Por favor, tente denovo...';
-    console.error( angular.toJson(err) );
+    console.error( angular.toJson(err) ); //angular.toJson
     alert(msg);
   }
 
@@ -13,7 +13,6 @@
     $scope.exits = [];
 
     // TODO
-      // ver os dados no ASSERT
   	  // tentar usar 'bind-once' no ng-class dos elementos do route-detail???
 
     function getData(create){
@@ -68,12 +67,16 @@
     $scope.$on('$ionicView.enter', function(e) {
       vm.intervalId = $interval(function(){
         vm.updateNextSchedules();
-      }, 1000);
+      }, 2000);
     });
 
     $scope.$on('$ionicView.leave', function(e) {
       $interval.cancel(vm.intervalId);
     });
+
+    vm.onSelect = function(newValue, oldValue){
+      vm.updateNextSchedules();
+    }
 
     vm.updateNextSchedules = function(){
       var cDate = new Date();
@@ -111,18 +114,15 @@
       return (d.h<10?'0':'')+d.h +':'+ (d.m<10?'0':'')+d.m;
     };
 
-    $scope.$watch('vm.exitModel', function(newValue, oldValue){
-      vm.updateNextSchedules();
-    });
-
     vm.isToday = function(cDay, day){
       if(cDay == 0 && day == 'Domingo')
         return true;
-      else if(cDay == 6 && (day == 'Sabado' || day == 'Sábado'))
+      else if(cDay == 6 && (day == 'Sabados' || day == 'Sábados' || day == 'Sabado' || day == 'Sábado'))
         return true;
       else
         return (day == 'Semana' && (cDay > 0 && cDay < 6));
     };
+
   })
 
   .controller('SearchCtrl', function($scope) {
@@ -137,28 +137,35 @@
     vm.arrowRight = true;
     vm.currentTab = [];
 
-    vm.arrowClick = function(index){
-      ++index;
-      if(index >= vm.line.schedules.length){
-        index = 0;
+    vm.arrowClick = function(){
+      ++vm.currentExit;
+      if(vm.currentExit >= vm.line.schedules.length){
+        vm.currentExit = 0;
         vm.arrowRight = true;
-      }else if(index+1 >= vm.line.schedules.length){
+      }else if(vm.currentExit+1 >= vm.line.schedules.length){
         vm.arrowRight = false;
       }
-      vm.currentExit = index;
+      vm.updateData();
     }
 
     vm.tabClick = function(sch_idx, tab_name){
       vm.currentTab[sch_idx] = tab_name;
     }
 
+    vm.updateData = function(){
+      vm.line = filterFilter($scope.lines, {cod: parseInt($stateParams.lineCode)})[0];
+      if(vm.line && vm.line.schedules){
+        vm.sch = vm.line.schedules[vm.currentExit];
+        if(!vm.currentTab[vm.currentExit])
+          vm.currentTab[vm.currentExit] = vm.sch.weekdays[0].day;
+      }
+    }
+
     $scope.$watch('lines', function(newValue, oldValue){
-      vm.line = filterFilter(newValue, {cod: parseInt($stateParams.lineCode)})[0];
-      //console.log(vm.line);
+      vm.updateData();
     });
 
-    vm.line = filterFilter($scope.lines, {cod: parseInt($stateParams.lineCode)})[0];
-    //console.log(vm.line);
+    vm.updateData();
   })
 
   .controller('UpdateCtrl', function($scope, $ionicLoading, $ionicActionSheet,

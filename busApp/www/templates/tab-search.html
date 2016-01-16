@@ -5,9 +5,9 @@
         <i class="icon ion-search placeholder-icon"></i>
         <input type="search" placeholder="" ng-model="vm.filter">
       </label>
-      <ion-item collection-repeat="l in lines | filter:{nome: vm.filter} | orderBy:'nome'"
+      <ion-item ng-repeat="l in lines | filter:{nome: vm.filter} | orderBy:'nome'"
         href="#/main/search/{{l.cod}}" class="item-text-wrap">
-        {{l.nome}} <span ng-show="l.obs !== ''">({{l.obs}})</span>
+        {{l.nome}} <span ng-if="l.obs !== ''">({{l.obs}})</span>
       </ion-item>
     </ion-list>
   </ion-content>

@@ -24,8 +24,9 @@ angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.co
   });
 })
 
-.config(function($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
+.config(function($ionicConfigProvider, $stateProvider, $urlRouterProvider, $animateProvider) {
 
+  $animateProvider.classNameFilter(/\bangular-animated\b/);
   $ionicConfigProvider.scrolling.jsScrolling(true);
 
   // Ionic uses AngularUI Router which uses the concept of states

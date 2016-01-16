@@ -79,6 +79,8 @@
             var horario = val3.find('> div:first > a').text().trim();
 
             if(horario != ''){
+              if(horario.indexOf('24:') > -1)
+                horario = horario.replace(/24:/, '00:');
               obj.weekdays[b].schedule.push(horario);
             }
           });
