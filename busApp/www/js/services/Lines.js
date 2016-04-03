@@ -54,7 +54,7 @@
     function getAll(){
       var _routes = [];
 
-      var query1 = 'SELECT * FROM linha ORDER BY nome DESC';
+      var query1 = 'SELECT * FROM linha ORDER BY nome ASC';
       var query2 = 'SELECT * FROM horario WHERE linha_cod = ? ORDER BY saida,dia DESC';
 
       var p = SqliteService.executeSql(query1)

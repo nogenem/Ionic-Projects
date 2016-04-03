@@ -2,7 +2,7 @@
   function error(err){
     var msg = 'Ocorreu um erro desconhecido. Por favor, tente denovo...';
     console.error( angular.toJson(err) ); //angular.toJson
-    alert(msg);
+    alert(angular.toJson(err));
   }
 
   angular.module('busApp.controllers', [])
@@ -13,6 +13,7 @@
     $scope.exits = [];
 
     // TODO
+      // REVER ATUALIZAÇÃO DO BANCO DE DADOS!! APP N ATUALIZA DADOS ATE SER FECHADO APÓS UM UPDATE DO BANCO DE DADOS
   	  // tentar usar 'bind-once' no ng-class dos elementos do route-detail???
 
     function getData(create){
@@ -42,16 +43,9 @@
         });
     }
 
-    $rootScope.$on('device-ready', function(event, data){
-      console.log('>> Pegando dados no celular...');
+    ionic.Platform.ready(function(){
       getData();
     });
-    // No browser, o 'device-ready' é emitido antes dos
-    //  constrollers serem criados...
-    if(!window.cordova){
-      console.log('>> Pegando dados no browser...');
-      getData();
-    }
 
     $scope.$on('update-lines', function(event, data){
       getData();
@@ -176,7 +170,9 @@
       $ionicLoading.show({template: '<p>Atualizando...</p><ion-spinner></ion-spinner>'});
       DataMining.getData($scope.lines)
         .then(function(data){
-          console.log('Controller: DataMining complete!');
+          //console.log('Controller: DataMining complete!');
+          //console.log( angular.toJson(data) );
+          console.log(data);
           $ionicLoading.hide();
           $scope.$emit('update-lines', 'done!');
         }, function(err){

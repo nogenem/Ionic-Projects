@@ -19,8 +19,6 @@ angular.module('busApp', ['ionic', 'ngCordova', 'ionic-modal-select', 'busApp.co
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    $rootScope.$broadcast('device-ready', 'ready!');
   });
 })
 

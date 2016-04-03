@@ -2,7 +2,8 @@
   'use strict';
 
   function getRoutes($http, SqliteService){
-    var url = 'https://cors-anywhere.herokuapp.com/http://www.biguacutransportes.com.br/ajax/lineBus/searchGetLine';
+    //https://cors-anywhere.herokuapp.com/
+    var url = 'http://www.biguacutransportes.com.br/ajax/lineBus/searchGetLine';
     var data = 'company=1&order=DESC';
 
     function parseData(resp){
@@ -39,7 +40,8 @@
   }
 
   function getRoute($http, SqliteService, cod){
-    var url = 'https://cors-anywhere.herokuapp.com/http://www.biguacutransportes.com.br/ajax/lineBus/preview/?line='+
+    //https://cors-anywhere.herokuapp.com/
+    var url = 'http://www.biguacutransportes.com.br/ajax/lineBus/preview/?line='+
       cod+'&company=0&detail%5B%5D=1&detail%5B%5D=2&detail%5B%5D=3';
 
     function parseData(resp){
@@ -91,8 +93,11 @@
       return _result;
     }
 
-    //origin,x-requested-with
-    return $http.get(url,{headers:{'Access-Control-Allow-Headers': 'origin,x-requested-with'}})
+    //'Access-Control-Allow-Headers': 'origin,x-requested-with'
+    //'Access-Control-Request-Headers': 'accept, access-control-allow-headers'
+    //'X-Requested-With': 'XMLHttpRequest'
+    return $http.get(url, {headers:{
+      }})
       .then(function(response){
         return parseData(response.data);
       });
