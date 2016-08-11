@@ -163,14 +163,14 @@
   })
 
   .controller('UpdateCtrl', function($scope, $ionicLoading, $ionicActionSheet,
-      ConnectivityMonitor, Model, DataMining) {
+      ConnectivityMonitor, Model, Extractor) {
     var vm = this;
 
     function _update(){
       $ionicLoading.show({template: '<p>Atualizando...</p><ion-spinner></ion-spinner>'});
-      DataMining.getData($scope.lines)
+      Extractor.getData($scope.lines)
         .then(function(data){
-          //console.log('Controller: DataMining complete!');
+          //console.log('Controller: Extraction completed!');
           //console.log( angular.toJson(data) );
           console.log(data);
           $ionicLoading.hide();

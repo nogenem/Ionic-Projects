@@ -104,7 +104,7 @@
   }
 
   angular.module('busApp')
-  .service('DataMining', function($http, $q, SqliteService, filterFilter){
+  .service('Extractor', function($http, $q, SqliteService, filterFilter){
     return({
       getData: getData
     });
@@ -149,10 +149,10 @@
           });
           return $q.all(promises)
             .then(function(resp3){
-              console.log('DataMining: DataMining complete!');
+              console.log('Extractor: Extraction completed!');
               return SqliteService.executePendingQueries()
                 .then(function(resp){
-                  console.log('DataMining: Update BD complete!');
+                  console.log('Extractor: Update BD complete!');
                   return resp3;
                 });
             });
