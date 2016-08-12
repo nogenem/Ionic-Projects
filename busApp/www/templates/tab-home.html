@@ -21,7 +21,7 @@
           </div>
         </div>
       </ion-item>
-      <ion-item ng-repeat="o in vm.nextSchedules | limitTo:15 | orderBy:'hora' track by $index"
+      <ion-item ng-repeat="o in vm.nextSchedules | orderBy:'hora' | limitTo:15 track by $index"
         href="#/main/search/{{o.cod}}" class="item-text-wrap">
         <div class="row">
           <div class="col col-25">{{o.hora}}</div>

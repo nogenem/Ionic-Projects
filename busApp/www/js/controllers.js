@@ -28,6 +28,7 @@
       promises.push(Model.Lines.getAll()
         .then(function(resp){
           $scope.lines = resp;
+          console.log(resp);
         }));
       promises.push(Model.Lines.getExits()
         .then(function(resp){
@@ -89,14 +90,16 @@
           for(var c = 0; c < schedules.weekdays.length; c++){
             var weekdays = schedules.weekdays[c];
             var day = weekdays.day;
-            if(!vm.isToday(cDay, day))
+            if(!vm.isToday(cDay, day))  
               continue;
+            var count = 0;
             for(var d = 0; d < weekdays.schedule.length; d++){
               var hora = weekdays.schedule[d];
               if(cHour < hora){
                 vm.nextSchedules.push({cod: line.cod, nome: nome, obs: line.obs, hora: hora});
-                break;
+                count++;
               }
+              if(count >= 3) break;
             }
           }
         }
