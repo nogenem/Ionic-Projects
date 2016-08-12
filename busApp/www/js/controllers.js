@@ -53,7 +53,8 @@
     });
   })
 
-  .controller('HomeCtrl', function($scope, $ionicLoading, $interval, Model) {
+  .controller('HomeCtrl', function($scope, $ionicLoading, $interval,
+      $timeout, $state, Model) {
     var vm = this;
     vm.nextSchedules = [];
     vm.intervalId = null;
@@ -71,6 +72,15 @@
 
     vm.onSelect = function(newValue, oldValue){
       vm.updateNextSchedules();
+    }
+
+    vm.gotoLine = function(cod){
+      $state.go('tab.search');
+      // Gambiarra para que seja criado o botão de volta
+      // para a aba de Search...
+      $timeout(function(){
+        $state.go('tab.search.line-detail', {lineCode: cod});
+      }, 0);
     }
 
     vm.updateNextSchedules = function(){
