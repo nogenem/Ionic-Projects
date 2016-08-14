@@ -28,7 +28,6 @@
       promises.push(Model.Lines.getAll()
         .then(function(resp){
           $scope.lines = resp;
-          console.log(resp);
         }));
       promises.push(Model.Lines.getExits()
         .then(function(resp){
@@ -183,10 +182,11 @@
       $ionicLoading.show({template: '<p>Atualizando...</p><ion-spinner></ion-spinner>'});
       Extractor.getData($scope.lines)
         .then(function(data){
-          //console.log('Controller: Extraction completed!');
-          //console.log( angular.toJson(data) );
-          console.log(data);
+          data = data.filter(function(obj){ return obj!==null; })
           $ionicLoading.hide();
+
+		  alert(data.length + " linha(s) atualizada(s).");
+
           $scope.$emit('update-lines', 'done!');
         }, function(err){
           error(err);
