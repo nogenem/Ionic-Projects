@@ -12,7 +12,14 @@
     $scope.lines = [];
     $scope.exits = [];
 
+    // Ordem de Compactacao
+      // app.js, controllers.js, SqliteService.js, ConnectivityMonitor.js, 
+      // Extractor.js, Lines.js, Model.js
+    // Comando de compactacao
+      // java -jar closure-compiler.jar --js=app.js --js_output_file app.bundle.min.js --compilation_level WHITESPACE_ONLY
+
     // TODO
+      // Fazer um sistema de build para compactacao...
       // REVER ATUALIZAÇÃO DO BANCO DE DADOS!! APP N ATUALIZA DADOS ATE SER FECHADO APÓS UM UPDATE DO BANCO DE DADOS
   	  // tentar usar 'bind-once' no ng-class dos elementos do route-detail???
 
@@ -123,7 +130,7 @@
     vm.isToday = function(cDay, day){
       if(cDay == 0 && day == 'Domingo')
         return true;
-      else if(cDay == 6 && (day == 'Sabados' || day == 'Sábados' || day == 'Sabado' || day == 'Sábado'))
+      else if(cDay == 6 && (day == 'Sabados' || day == 'S\u00e1bados' || day == 'Sabado' || day == 'S\u00e1bado'))
         return true;
       else
         return (day == 'Semana' && (cDay > 0 && cDay < 6));

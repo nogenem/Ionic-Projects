@@ -9,34 +9,13 @@
     
     <title></title>
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/grid_system.css" rel="stylesheet">
+    <link href="lib/ionic/css/ionic.min.css" rel="stylesheet">
+    <link href="css/grid_system.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
-
-    <!-- JQuery -->
-    <script src="lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="lib/ngCordova/dist/ng-cordova.min.js" charset="utf-8"></script>
-    <script src="cordova.js"></script>
-
-    <!-- your app's js -->
-    <script src="lib/ionic-modal-select/dist/ionic-modal-select.min.js"></script>
-
-    <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/services/SqliteService.js"></script>
-    <script src="js/services/ConnectivityMonitor.js"></script>
-    <script src="js/services/Extractor.js"></script>
-    <script src="js/services/Lines.js"></script>
-    <script src="js/services/Model.js"></script>
   </head>
   <body ng-app="busApp">
     <!--
@@ -52,5 +31,20 @@
       have templates inline in this html file if you'd like).
     -->
     <ion-nav-view></ion-nav-view>
+
+    <!-- JQuery -->
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.min.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="lib/ngCordova/dist/ng-cordova.min.js" charset="utf-8"></script>
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="lib/ionic-modal-select/dist/ionic-modal-select.min.js"></script>
+
+    <script src="js/app.bundle.min.js"></script>
   </body>
 </html>

@@ -1,12 +1,9 @@
-/* Empty. Add your own CSS if you like */
 #line-sub-header {
   margin-top: 92px;
 }
-
 #line-detail-content {
   margin-top: 45px;
 }
-
 #line-sch span {
 	border: thin solid lightslategray;
   	border-radius: 5px;
@@ -15,7 +12,6 @@
 	background-color: #f8f8f8 !important;
 	font-weight: 500;
 }
-
 @media (max-width: 220px) {
 	#line-sch span{
 		padding-left: 5px;
